@@ -1,5 +1,6 @@
 import React from 'react';
 import stockBarberPhoto from '../assets/images/image.jpg';
+import '../assets/styles/home.scss';
 
 function Home(): JSX.Element {
   return (
@@ -31,23 +32,29 @@ function Home(): JSX.Element {
             />
           </div>
           <div>
-            <select name="barber">
-              <option value="">Select Barber</option>
+            <select name="barber" required>
+              <option value="" disabled selected hidden>
+                Select Barber
+              </option>
               <option value="1">Jože</option>
               <option value="2">Janez</option>
               <option value="3">Marko</option>
             </select>
-            <select name="service">
-              <option value="">Select Service</option>
+            <select name="service" required>
+              <option value="" disabled selected hidden>
+                Select Service
+              </option>
               <option value="1">Shave</option>
               <option value="2">Haircut</option>
               <option value="3">Shave + Haircut</option>
             </select>
           </div>
           <div>
-            <input type="date" name="date" />
-            <select name="time">
-              <option value="">Select Time</option>
+            <input type="date" name="date" placeholder="Select Date" required />
+            <select name="time" required>
+              <option value="" disabled selected hidden>
+                Select Time
+              </option>
               <option value="1">10.00</option>
               <option value="2">11.00</option>
               <option value="3">12.00</option>
