@@ -42,8 +42,19 @@ function Home(): JSX.Element {
     }
   }
 
+  function areInputsValid(): boolean {
+    const pattern =
+      /^(\+386|030|040|068|069|031|041|051|065|070|071|064|065|059|081|082|083)([0-9]{6}|[0-9]{8})$/gm; // regex that checkes if phone number is slovenian, possibly inaccurate, numbers were copied from wikipedia
+    if (pattern.test(inputValues.phoneNumber) !== true) {
+      alert('Phone no gud pls fix');
+      return false;
+    }
+    return true;
+  }
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>): void {
     e.preventDefault();
+    areInputsValid();
     alert(JSON.stringify(inputValues));
   }
 
