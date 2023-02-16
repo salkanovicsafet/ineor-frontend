@@ -1,4 +1,5 @@
 import axios from 'axios';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import stockBarberPhoto from '../assets/images/image.jpg';
 import '../assets/styles/home.scss';
@@ -12,7 +13,18 @@ function Home(): JSX.Element {
       id: 0,
       firstName: '',
       lastName: '',
-      workHours: [],
+      workHours: [
+        {
+          id: 0,
+          day: 0,
+          startHour: 0,
+          endHour: 0,
+          lunchTime: {
+            startHour: 0,
+            durationMinutes: 0,
+          },
+        },
+      ],
     },
   ]);
 
@@ -24,6 +36,8 @@ function Home(): JSX.Element {
       price: 0,
     },
   ]);
+
+  const [timeOptions, setTimeOptions] = useState<JSX.Element[]>([]);
 
   // gets barbers from backend
   useEffect(() => {
@@ -89,12 +103,58 @@ function Home(): JSX.Element {
         : e.target.name]: false, // if it isn't, it finds the field by name and clears its error
     });
     if (e.target.name === 'service') {
+      updateTimeOptions(inputValues.date, inputValues.barber, +e.target.value);
       if (e.target.value !== '') {
         const price = services.find(
           (service) => service.id == +e.target.value
         )?.price;
         setPriceField(`Price is ${price} €`);
       } else setPriceField(`Select any service.`);
+    }
+    if (e.target.name === 'barber')
+      updateTimeOptions(inputValues.date, +e.target.value, inputValues.service);
+    if (e.target.name === 'date')
+      updateTimeOptions(
+        e.target.value,
+        inputValues.barber,
+        inputValues.service
+      );
+  }
+
+  function updateTimeOptions(
+    selectedDate: string,
+    selectedBarber: number,
+    selectedService: number
+  ) {
+    if (barbers) {
+      const date = new Date(selectedDate);
+      const day = date.getDay();
+      const barber = barbers.find((barber) => barber.id == selectedBarber);
+      const startHour = barber?.workHours[day].startHour + '.00';
+      const endHour = barber?.workHours[day].endHour + '.00';
+      const service = services.find((service) => service.id == selectedService);
+      const start = moment(startHour, 'hh.mm a');
+      const end = moment(endHour, 'hh.mm a');
+
+      // round starting minutes up to nearest 10
+      // note that 59 will round up to 60, and moment.js handles that correctly
+      start.minutes(Math.ceil(start.minutes() / 10) * 10);
+
+      const result = [];
+
+      const current = moment(start);
+
+      while (current <= end) {
+        result.push(current.format('HH.mm'));
+        current.add(10, 'minutes');
+      }
+
+      const formattedIntervals = result.map((time) => (
+        <option value={time} key={time}>
+          {time}
+        </option>
+      ));
+      setTimeOptions(formattedIntervals);
     }
   }
 
@@ -279,6 +339,9 @@ function Home(): JSX.Element {
                   value={inputValues.date}
                   onChange={handleChange}
                   required
+                  disabled={
+                    inputValues.barber && inputValues.service ? false : true
+                  }
                 />
               </div>
               <div className="field">
@@ -298,9 +361,7 @@ function Home(): JSX.Element {
                   <option value="" disabled hidden>
                     Select Time
                   </option>
-                  <option value="1">10.00</option>
-                  <option value="2">11.00</option>
-                  <option value="3">12.00</option>
+                  {timeOptions}
                 </select>
               </div>
             </div>
