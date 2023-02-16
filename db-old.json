@@ -36,98 +36,24 @@
           }
         },
         {
-          "id": 4,
-          "day": 4,
-          "startHour": 12,
-          "endHour": "20",
-          "lunchTime": {
-            "startHour": 16,
-            "durationMinutes": 30
-          }
-        },
-        {
-          "id": 5,
-          "day": 5,
-          "startHour": 12,
-          "endHour": "20",
-          "lunchTime": {
-            "startHour": 16,
-            "durationMinutes": 30
-          }
-        }
-      ]
-    },
-    {
-      "id": 2,
-      "firstName": "El",
-      "lastName": "Barbinjo",
-      "workHours": [
-        {
-          "id": 6,
-          "day": 1,
-          "startHour": 12,
-          "endHour": "20"
-        },
-        {
-          "id": 7,
-          "day": 2,
-          "startHour": 12,
-          "endHour": "20"
-        },
-        {
-          "id": 8,
-          "day": 3,
-          "startHour": 12,
-          "endHour": "20"
-        },
-        {
           "id": 9,
           "day": 4,
           "startHour": 12,
-          "endHour": "20"
+          "endHour": "20",
+          "lunchTime": {
+            "startHour": 16,
+            "durationMinutes": 30
+          }
         },
         {
           "id": 10,
           "day": 5,
           "startHour": 12,
-          "endHour": "20"
-        }
-      ]
-    },
-    {
-      "id": 3,
-      "firstName": "Ninja",
-      "lastName": "Barber",
-      "workHours": [
-        {
-          "id": 11,
-          "day": 1,
-          "startHour": 20,
-          "endHour": "23"
-        },
-        {
-          "id": 12,
-          "day": 2,
-          "startHour": 20,
-          "endHour": "23"
-        },
-        {
-          "id": 13,
-          "day": 3,
-          "startHour": 20,
-          "endHour": "23"
-        },
-        {
-          "id": 14,
-          "day": 4,
-          "startHour": 20,
-          "endHour": "23"
-        },
-        {
-          "id": 15,
-          "day": 5,
-          "startHour": 20,
-          "endHour": "23"
+          "endHour": "20",
+          "lunchTime": {
+            "startHour": 16,
+            "durationMinutes": 30
+          }
         }
       ]
     }
@@ -135,39 +61,101 @@
   "appointments": [
     {
       "id": 1,
-      "startDate": 1676617200,
+      "startDate": 1579674600,
       "barberId": 1,
       "serviceId": 2
     },
     {
       "id": 2,
-      "startDate": 1676664000,
-      "barberId": 3,
+      "startDate": 1579680900,
+      "barberId": 1,
       "serviceId": 1
     },
     {
       "id": 3,
-      "startDate": 1676646000,
-      "barberId": 2,
+      "startDate": 1579685400,
+      "barberId": 1,
       "serviceId": 2
     },
     {
       "id": 4,
-      "startDate": 1676655000,
-      "barberId": 2,
+      "startDate": 1579689000,
+      "barberId": 1,
       "serviceId": 1
     },
     {
       "id": 5,
-      "startDate": 1676638800,
+      "startDate": 1579691400,
       "barberId": 1,
-      "serviceId": 3
+      "serviceId": 2
     },
     {
       "id": 6,
       "startDate": 1579698600,
       "barberId": 1,
       "serviceId": 1
+    }
+  ],
+  "workHours": [
+    {
+      "id": 1,
+      "day": 1,
+      "startHour": 7,
+      "endHour": "15"
+    },
+    {
+      "id": 2,
+      "day": 2,
+      "startHour": 7,
+      "endHour": "15"
+    },
+    {
+      "id": 3,
+      "day": 3,
+      "startHour": 7,
+      "endHour": "15"
+    },
+    {
+      "id": 4,
+      "day": 4,
+      "startHour": 7,
+      "endHour": "15"
+    },
+    {
+      "id": 5,
+      "day": 5,
+      "startHour": 7,
+      "endHour": "15"
+    },
+    {
+      "id": 6,
+      "day": 1,
+      "startHour": 12,
+      "endHour": "20"
+    },
+    {
+      "id": 7,
+      "day": 2,
+      "startHour": 12,
+      "endHour": "20"
+    },
+    {
+      "id": 8,
+      "day": 3,
+      "startHour": 12,
+      "endHour": "20"
+    },
+    {
+      "id": 9,
+      "day": 4,
+      "startHour": 12,
+      "endHour": "20"
+    },
+    {
+      "id": 10,
+      "day": 5,
+      "startHour": 12,
+      "endHour": "20"
     }
   ],
   "services": [
