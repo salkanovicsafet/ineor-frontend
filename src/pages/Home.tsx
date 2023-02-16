@@ -3,8 +3,6 @@ import stockBarberPhoto from '../assets/images/image.jpg';
 import '../assets/styles/home.scss';
 
 function Home(): JSX.Element {
-  const Ahmed = { ime: 'Ahmed', prezime: 'Muminović' };
-
   return (
     <div className="main">
       <header>
