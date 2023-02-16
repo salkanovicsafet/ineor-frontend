@@ -218,7 +218,7 @@ function Home(): JSX.Element {
                   onChange={handleChange}
                 >
                   <>
-                    <option value="" disabled selected hidden>
+                    <option value="" disabled hidden>
                       Select Barber
                     </option>
                     {BarberOptions}
@@ -232,7 +232,7 @@ function Home(): JSX.Element {
                   value={inputValues.service}
                   onChange={handleChange}
                 >
-                  <option value="" disabled selected hidden>
+                  <option value="" disabled hidden>
                     Select Service
                   </option>
                   <option value="1">Shave</option>
@@ -263,7 +263,7 @@ function Home(): JSX.Element {
                   value={inputValues.time}
                   onChange={handleChange}
                 >
-                  <option value="" disabled selected hidden>
+                  <option value="" disabled hidden>
                     Select Time
                   </option>
                   <option value="1">10.00</option>
