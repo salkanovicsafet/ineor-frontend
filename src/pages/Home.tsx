@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
 import stockBarberPhoto from '../assets/images/image.jpg';
 import '../assets/styles/home.scss';
-import { inputValuesState } from '../interfaces/AppointmentForm';
+import { ErrorStates, InputValuesState } from '../interfaces/AppointmentForm';
 
 function Home(): JSX.Element {
-  const [inputValues, setInputValues] = useState<inputValuesState>({
+  const [errors, setErrors] = useState<ErrorStates>({
+    name: false,
+    email: false,
+    phoneNumber: false,
+    barber: false,
+    service: false,
+    date: false,
+    time: false,
+  });
+
+  const [inputValues, setInputValues] = useState<InputValuesState>({
     fname: '',
     lname: '',
     email: '',
     phoneNumber: '',
     barber: '',
     service: '',
-    date: new Date(),
+    date: '',
     time: '',
   });
 
@@ -25,6 +35,13 @@ function Home(): JSX.Element {
     setInputValues({
       ...inputValues,
       [e.target.name]: e.target.value,
+    });
+    setErrors({
+      //clears field errors upon detecting a change
+      ...errors,
+      [e.target.name === 'fname' || e.target.name === 'lname' // checks if the field is one of the name fields (since both name fields share one error msg)
+        ? 'name' // if it is, it clears the name fields error
+        : e.target.name]: false, // if it isn't, it finds the field by name and clears its error
     });
     if (e.target.name === 'service' && e.target.value !== '') {
       switch (e.target.value) {
@@ -43,13 +60,49 @@ function Home(): JSX.Element {
   }
 
   function areInputsValid(): boolean {
-    const pattern =
-      /^(\+386|030|040|068|069|031|041|051|065|070|071|064|065|059|081|082|083)([0-9]{6}|[0-9]{8})$/gm; // regex that checkes if phone number is slovenian, possibly inaccurate, numbers were copied from wikipedia
-    if (pattern.test(inputValues.phoneNumber) !== true) {
-      alert('Phone no gud pls fix');
-      return false;
+    let inputsAreValid = true;
+    const errorsTemporary = { ...errors };
+    // validates first and last name
+    if (inputValues.fname.length < 2 || inputValues.lname.length < 2) {
+      errorsTemporary.name = true;
+      inputsAreValid = false;
     }
-    return true;
+    // regex that checks if email is valid
+    let pattern =
+      /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    if (pattern.test(inputValues.email) !== true) {
+      errorsTemporary.email = true;
+      inputsAreValid = false;
+    }
+    // regex that checks if phone number is slovenian, possibly inaccurate, numbers were copied from wikipedia
+    pattern =
+      /^(\+386|030|040|068|069|031|041|051|065|070|071|064|065|059|081|082|083)([0-9]{6}|[0-9]{8})$/gm;
+    if (pattern.test(inputValues.phoneNumber) !== true) {
+      errorsTemporary.phoneNumber = true;
+      inputsAreValid = false;
+    }
+    // checks if barber is selected
+    if (!inputValues.barber) {
+      errorsTemporary.barber = true;
+      inputsAreValid = false;
+    }
+    // checks if service is selected
+    if (!inputValues.service) {
+      errorsTemporary.service = true;
+      inputsAreValid = false;
+    }
+    // checks if date is selected
+    if (!inputValues.date) {
+      errorsTemporary.date = true;
+      inputsAreValid = false;
+    }
+    // checks if time is selected
+    if (!inputValues.time) {
+      errorsTemporary.time = true;
+      inputsAreValid = false;
+    }
+    setErrors(errorsTemporary);
+    return inputsAreValid;
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>): void {
@@ -96,7 +149,9 @@ function Home(): JSX.Element {
                 />
               </div>
             </div>
-            <div className="error-msg">Please enter your full name</div>
+            {errors.name && (
+              <div className="error-msg">Please enter your full name</div>
+            )}
             <div className="field-group">
               <div className="field">
                 <input
@@ -120,8 +175,9 @@ function Home(): JSX.Element {
               </div>
             </div>
             <div className="error-msg">
-              <div>Please enter a valid email</div>
-              <div>Please enter phone number</div>
+              <div>{errors.email && <>Please enter a valid email</>}</div>
+
+              <div>{errors.phoneNumber && <>Please enter phone number</>}</div>
             </div>
             <div className="field-group">
               <div className="field">
@@ -156,8 +212,8 @@ function Home(): JSX.Element {
               </div>
             </div>
             <div className="error-msg">
-              <div>Please select a barber</div>
-              <div>Please select a service</div>
+              <div>{errors.barber && <>Please select a barber</>}</div>
+              <div>{errors.service && <>Please select a service</>}</div>
             </div>
             <div className="field-group">
               <div className="field">
@@ -165,6 +221,8 @@ function Home(): JSX.Element {
                   type="date"
                   name="date"
                   placeholder="Select Date"
+                  value={inputValues.date}
+                  onChange={handleChange}
                   required
                 />
               </div>
@@ -185,8 +243,8 @@ function Home(): JSX.Element {
               </div>
             </div>
             <div className="error-msg">
-              <div>Please pick a date</div>
-              <div>Please pick a time</div>
+              <div>{errors.date && <>Please pick a date</>}</div>
+              <div>{errors.time && <>Please pick a time</>}</div>
             </div>
             <div className="field-group">
               <input type="text" name="price" value={priceField} disabled />
