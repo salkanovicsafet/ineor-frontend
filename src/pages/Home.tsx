@@ -4,6 +4,7 @@ import stockBarberPhoto from '../assets/images/image.jpg';
 import '../assets/styles/home.scss';
 import { ErrorStates, InputValuesState } from '../interfaces/AppointmentForm';
 import Barber from '../interfaces/Barber';
+import Service from '../interfaces/Service';
 
 function Home(): JSX.Element {
   const [barbers, setBarbers] = useState<Barber[]>([
@@ -15,11 +16,33 @@ function Home(): JSX.Element {
     },
   ]);
 
+  const [services, setServices] = useState<Service[]>([
+    {
+      id: 0,
+      name: '',
+      durationMinutes: 0,
+      price: 0,
+    },
+  ]);
+
+  // gets barbers from backend
   useEffect(() => {
     axios
       .get('/barbers')
       .then((response) => {
         setBarbers(response.data);
+      })
+      .catch(() => {
+        alert('An unexpected error has occurred! Please try again later.');
+      });
+  }, []);
+
+  // gets services from backend
+  useEffect(() => {
+    axios
+      .get('/services')
+      .then((response) => {
+        setServices(response.data);
       })
       .catch(() => {
         alert('An unexpected error has occurred! Please try again later.');
@@ -41,8 +64,8 @@ function Home(): JSX.Element {
     lname: '',
     email: '',
     phoneNumber: '',
-    barber: '',
-    service: '',
+    barber: 0,
+    service: 0,
     date: '',
     time: '',
   });
@@ -65,19 +88,13 @@ function Home(): JSX.Element {
         ? 'name' // if it is, it clears the name fields error
         : e.target.name]: false, // if it isn't, it finds the field by name and clears its error
     });
-    if (e.target.name === 'service' && e.target.value !== '') {
-      switch (e.target.value) {
-        case '1':
-          setPriceField('Price is 15 €');
-
-          break;
-        case '2':
-          setPriceField('Price is 20 €');
-          break;
-        case '3':
-          setPriceField('Price is 30 €');
-          break;
-      }
+    if (e.target.name === 'service') {
+      if (e.target.value !== '') {
+        const price = services.find(
+          (service) => service.id == +e.target.value
+        )?.price;
+        setPriceField(`Price is ${price} €`);
+      } else setPriceField(`Select any service.`);
     }
   }
 
@@ -137,6 +154,14 @@ function Home(): JSX.Element {
     return (
       <option value={barber.id} key={barber.id}>
         {barber.firstName} {barber.lastName}
+      </option>
+    );
+  });
+
+  const ServiceOptions = services.map((service) => {
+    return (
+      <option value={service.id} key={service.id}>
+        {service.name}
       </option>
     );
   });
@@ -218,7 +243,7 @@ function Home(): JSX.Element {
                   onChange={handleChange}
                 >
                   <>
-                    <option value="" disabled hidden>
+                    <option value={0} disabled hidden>
                       Select Barber
                     </option>
                     {BarberOptions}
@@ -232,12 +257,12 @@ function Home(): JSX.Element {
                   value={inputValues.service}
                   onChange={handleChange}
                 >
-                  <option value="" disabled hidden>
-                    Select Service
-                  </option>
-                  <option value="1">Shave</option>
-                  <option value="2">Haircut</option>
-                  <option value="3">Shave + Haircut</option>
+                  <>
+                    <option value={0} disabled hidden>
+                      Select Service
+                    </option>
+                    {ServiceOptions}
+                  </>
                 </select>
               </div>
             </div>
@@ -262,6 +287,13 @@ function Home(): JSX.Element {
                   required
                   value={inputValues.time}
                   onChange={handleChange}
+                  disabled={
+                    inputValues.barber &&
+                    inputValues.service &&
+                    inputValues.date
+                      ? false
+                      : true
+                  }
                 >
                   <option value="" disabled hidden>
                     Select Time

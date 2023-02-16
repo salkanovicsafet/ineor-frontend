@@ -3,10 +3,10 @@ export interface InputValuesState {
   lname: string;
   email: string;
   phoneNumber: string;
-  barber: number | '';
-  service: number | '';
+  barber: number;
+  service: number;
   date: string;
-  time: string | '';
+  time: string;
 }
 
 export interface ErrorStates {
