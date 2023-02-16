@@ -1,8 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import stockBarberPhoto from '../assets/images/image.jpg';
 import '../assets/styles/home.scss';
+import { inputValuesState } from '../interfaces/AppointmentForm';
 
 function Home(): JSX.Element {
+  const [inputValues, setInputValues] = useState<inputValuesState>({
+    fname: '',
+    lname: '',
+    email: '',
+    phoneNumber: '',
+    barber: '',
+    service: '',
+    date: new Date(),
+    time: '',
+  });
+
+  const [priceField, setPriceField] = useState<string>('Select any service.');
+
+  function handleChange(
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ): void {
+    setInputValues({
+      ...inputValues,
+      [e.target.name]: e.target.value,
+    });
+    if (e.target.name === 'service' && e.target.value !== '') {
+      switch (e.target.value) {
+        case '1':
+          setPriceField('Price is 15 €');
+
+          break;
+        case '2':
+          setPriceField('Price is 20 €');
+          break;
+        case '3':
+          setPriceField('Price is 30 €');
+          break;
+      }
+    }
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>): void {
+    e.preventDefault();
+    alert(JSON.stringify(inputValues));
+  }
+
   return (
     <div className="main">
       <header>
@@ -18,13 +62,15 @@ function Home(): JSX.Element {
         </div>
         <div className="form-container">
           <h2>BOOK YOUR APPOINTMENT</h2>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="field-group">
               <div className="field">
                 <input
                   type="text"
                   name="fname"
                   placeholder="First Name"
+                  value={inputValues.fname}
+                  onChange={handleChange}
                   required
                 />
               </div>
@@ -33,26 +79,42 @@ function Home(): JSX.Element {
                   type="text"
                   name="lname"
                   placeholder="Last Name"
+                  value={inputValues.lname}
+                  onChange={handleChange}
                   required
                 />
               </div>
             </div>
             <div className="field-group">
               <div className="field">
-                <input type="email" name="email" placeholder="Email" required />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  required
+                  value={inputValues.email}
+                  onChange={handleChange}
+                />
               </div>
               <div className="field">
                 <input
                   type="tel"
                   name="phoneNumber"
                   placeholder="Contact Number"
+                  value={inputValues.phoneNumber}
+                  onChange={handleChange}
                   required
                 />
               </div>
             </div>
             <div className="field-group">
               <div className="field">
-                <select name="barber" required>
+                <select
+                  name="barber"
+                  required
+                  value={inputValues.barber}
+                  onChange={handleChange}
+                >
                   <option value="" disabled selected hidden>
                     Select Barber
                   </option>
@@ -62,7 +124,12 @@ function Home(): JSX.Element {
                 </select>
               </div>
               <div className="field">
-                <select name="service" required>
+                <select
+                  name="service"
+                  required
+                  value={inputValues.service}
+                  onChange={handleChange}
+                >
                   <option value="" disabled selected hidden>
                     Select Service
                   </option>
@@ -82,7 +149,12 @@ function Home(): JSX.Element {
                 />
               </div>
               <div className="field">
-                <select name="time" required>
+                <select
+                  name="time"
+                  required
+                  value={inputValues.time}
+                  onChange={handleChange}
+                >
                   <option value="" disabled selected hidden>
                     Select Time
                   </option>
@@ -93,12 +165,7 @@ function Home(): JSX.Element {
               </div>
             </div>
             <div className="field-group">
-              <input
-                type="text"
-                name="price"
-                value="Select any service."
-                disabled
-              />
+              <input type="text" name="price" value={priceField} disabled />
             </div>
             <button type="submit">BOOK APPOINTMENT</button>
           </form>
