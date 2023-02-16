@@ -1,9 +1,31 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import stockBarberPhoto from '../assets/images/image.jpg';
 import '../assets/styles/home.scss';
 import { ErrorStates, InputValuesState } from '../interfaces/AppointmentForm';
+import Barber from '../interfaces/Barber';
 
 function Home(): JSX.Element {
+  const [barbers, setBarbers] = useState<Barber[]>([
+    {
+      id: 0,
+      firstName: '',
+      lastName: '',
+      workHours: [],
+    },
+  ]);
+
+  useEffect(() => {
+    axios
+      .get('/barbers')
+      .then((response) => {
+        setBarbers(response.data);
+      })
+      .catch(() => {
+        alert('An unexpected error has occurred! Please try again later.');
+      });
+  }, []);
+
   const [errors, setErrors] = useState<ErrorStates>({
     name: false,
     email: false,
@@ -111,6 +133,14 @@ function Home(): JSX.Element {
     alert(JSON.stringify(inputValues));
   }
 
+  const BarberOptions = barbers.map((barber) => {
+    return (
+      <option value={barber.id} key={barber.id}>
+        {barber.firstName} {barber.lastName}
+      </option>
+    );
+  });
+
   return (
     <div className="main">
       <header>
@@ -187,12 +217,12 @@ function Home(): JSX.Element {
                   value={inputValues.barber}
                   onChange={handleChange}
                 >
-                  <option value="" disabled selected hidden>
-                    Select Barber
-                  </option>
-                  <option value="1">Jože</option>
-                  <option value="2">Janez</option>
-                  <option value="3">Marko</option>
+                  <>
+                    <option value="" disabled selected hidden>
+                      Select Barber
+                    </option>
+                    {BarberOptions}
+                  </>
                 </select>
               </div>
               <div className="field">
