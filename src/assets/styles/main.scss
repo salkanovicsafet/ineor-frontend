@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500&family=Squada+One&display=swap');
+@import "../../utils/variables";
 
-*{
-  font-weight: 500;
+body{
+  background-color: $secondary-color;
 }
