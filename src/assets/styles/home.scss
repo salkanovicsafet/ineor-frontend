@@ -3,7 +3,7 @@
 .main{
   width: 74.5%;
   margin: 1.625rem auto;
-  padding-bottom: 7rem;
+  padding-bottom: 10rem;
 }
 
 header{
@@ -49,12 +49,11 @@ h3:last-of-type{
 .form-container{
   margin: 0;
   max-width: 33%;
-  height: 485px;
   background-color: $primary-color;
   position: absolute;
   right: 0;
   top: 21.5%;
-  padding: 31px;
+  padding: 31px 31px 44px 31px;
 }
 
 h2{
@@ -64,6 +63,20 @@ h2{
   letter-spacing: 1.8px;
   color: $white;
   font-weight: 500;
+}
+
+.error-msg{
+  font-size: 0.875rem;
+  font-family: $font-roboto;
+  margin-top: 0.5rem;
+  color: $error-red;
+  width: 100%;
+  display: flex;
+  gap: .625rem;
+
+  div {
+    width: 100%;
+  }
 }
 
 form{
@@ -77,11 +90,11 @@ form{
   margin-top:1.5625rem;
 }
 
-.field-group:nth-of-type(2){
+.field-group:nth-of-type(3){
   margin-top:2.1875rem;
 }
 
-.field-group:nth-of-type(3){
+.field-group:nth-of-type(5){
   margin-top:1rem;
 }
 

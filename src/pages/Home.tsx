@@ -96,6 +96,7 @@ function Home(): JSX.Element {
                 />
               </div>
             </div>
+            <div className="error-msg">Please enter your full name</div>
             <div className="field-group">
               <div className="field">
                 <input
@@ -117,6 +118,10 @@ function Home(): JSX.Element {
                   required
                 />
               </div>
+            </div>
+            <div className="error-msg">
+              <div>Please enter a valid email</div>
+              <div>Please enter phone number</div>
             </div>
             <div className="field-group">
               <div className="field">
@@ -150,6 +155,10 @@ function Home(): JSX.Element {
                 </select>
               </div>
             </div>
+            <div className="error-msg">
+              <div>Please select a barber</div>
+              <div>Please select a service</div>
+            </div>
             <div className="field-group">
               <div className="field">
                 <input
@@ -174,6 +183,10 @@ function Home(): JSX.Element {
                   <option value="3">12.00</option>
                 </select>
               </div>
+            </div>
+            <div className="error-msg">
+              <div>Please pick a date</div>
+              <div>Please pick a time</div>
             </div>
             <div className="field-group">
               <input type="text" name="price" value={priceField} disabled />
