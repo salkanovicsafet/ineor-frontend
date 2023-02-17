@@ -3,6 +3,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import stockBarberPhoto from '../assets/images/image.jpg';
 import '../assets/styles/home.scss';
+import Appointment from '../interfaces/Appointment';
 import { ErrorStates, InputValuesState } from '../interfaces/AppointmentForm';
 import Barber from '../interfaces/Barber';
 import Service from '../interfaces/Service';
@@ -121,7 +122,7 @@ function Home(): JSX.Element {
       );
   }
 
-  function updateTimeOptions(
+  async function updateTimeOptions(
     selectedDate: string,
     selectedBarber: number,
     selectedService: number
@@ -130,12 +131,11 @@ function Home(): JSX.Element {
       const date = new Date(selectedDate);
       const day = date.getDay();
       const barber = barbers.find((barber) => barber.id == selectedBarber);
-      const startHour = barber?.workHours[day].startHour + '.00';
-      const endHour = barber?.workHours[day].endHour + '.00';
+      const startHour = barber?.workHours[day - 1].startHour + '.00';
+      const endHour = barber?.workHours[day - 1].endHour + '.00';
       const service = services.find((service) => service.id == selectedService);
-      const start = moment(startHour, 'hh.mm a');
-      const end = moment(endHour, 'hh.mm a');
-
+      const start = moment(startHour, 'HH.mm');
+      const end = moment(endHour, 'HH.mm');
       // round starting minutes up to nearest 10
       // note that 59 will round up to 60, and moment.js handles that correctly
       start.minutes(Math.ceil(start.minutes() / 10) * 10);
@@ -148,6 +148,38 @@ function Home(): JSX.Element {
         result.push(current.format('HH.mm'));
         current.add(10, 'minutes');
       }
+
+      const momentDate = moment(date, 'DD/MM/YYYY');
+
+      const response = await axios.get('/appointments');
+
+      const appointments: Appointment[] = response.data;
+
+      const barberAppointments = appointments.filter(
+        (appointment) => appointment.barberId == selectedBarber
+      );
+
+      const appointmentsFormatted = barberAppointments.map((appointment) => {
+        return {
+          start: moment(moment.unix(appointment.startDate), 'MM/DD/YYYY HH.mm'),
+          serviceId: appointment.serviceId,
+        };
+      });
+
+      const conflictingAppointments = appointmentsFormatted.filter(
+        (appointment) => moment(appointment.start).isSame(momentDate, 'day')
+      );
+
+      const formattedConflicts = conflictingAppointments.map((appointment) => {
+        return {
+          start: moment(appointment.start).format('HH.mm'),
+          duration: services.find(
+            (service) => service.id === appointment.serviceId
+          )?.durationMinutes,
+        };
+      });
+
+      console.log(formattedConflicts);
 
       const formattedIntervals = result.map((time) => (
         <option value={time} key={time}>
