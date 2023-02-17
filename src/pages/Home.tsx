@@ -131,22 +131,39 @@ function Home(): JSX.Element {
       const date = new Date(selectedDate);
       const day = date.getDay();
       const barber = barbers.find((barber) => barber.id == selectedBarber);
-      const startHour = barber?.workHours[day - 1].startHour + '.00';
-      const endHour = barber?.workHours[day - 1].endHour + '.00';
+      const startHour = moment(
+        barber?.workHours[day - 1].startHour + '.00',
+        'HH.mm'
+      );
+
+      const lunchStart = moment(
+        barber?.workHours[day - 1].lunchTime.startHour + '.00',
+        'HH.mm'
+      );
+
+      const lunchDuration =
+        barber?.workHours[day - 1].lunchTime.durationMinutes;
+      const lunchEnd = moment(
+        barber?.workHours[day - 1].lunchTime.startHour + '.00',
+        'HH.mm',
+        'HH.mm'
+      ).add(lunchDuration, 'minutes');
+      const endHour = moment(
+        barber?.workHours[day - 1].endHour + '.00',
+        'HH.mm'
+      );
       const duration = services.find(
         (service) => service.id == selectedService
       )?.durationMinutes;
-      const start = moment(startHour, 'HH.mm');
-      const end = moment(endHour, 'HH.mm');
       // round starting minutes up to nearest 10
       // note that 59 will round up to 60, and moment.js handles that correctly
-      start.minutes(Math.ceil(start.minutes() / 10) * 10);
+      startHour.minutes(Math.ceil(startHour.minutes() / 10) * 10);
 
       const result: string[] = [];
 
-      const current = moment(start);
+      const current = moment(startHour);
 
-      while (current <= end) {
+      while (current <= endHour) {
         result.push(current.format('HH.mm'));
         current.add(10, 'minutes');
       }
@@ -185,7 +202,7 @@ function Home(): JSX.Element {
         };
       });
 
-      const availableIntervals = result.filter((time, index) => {
+      const availableIntervals = result.filter((time) => {
         let ok = true;
         const testStartTime = moment(time, 'HH.mm');
         const testEndTime = moment(time, 'HH.mm').add(duration, 'minutes');
@@ -194,9 +211,16 @@ function Home(): JSX.Element {
           const conflictEnd = moment(conflict.end, 'HH.mm');
 
           if (
+            //////These make sure that appointments dont overlap other already-booked appointments
             testStartTime.isSame(conflictStart) ||
             testStartTime.isBetween(conflictStart, conflictEnd) ||
-            testEndTime.isBetween(conflictStart, conflictEnd)
+            testEndTime.isBetween(conflictStart, conflictEnd) ||
+            //////This makes sure that sessions dont go longer than the barber's shift
+            testEndTime.isAfter(endHour) ||
+            //////This makes sure that the sessions arent during the barber's lunch break
+            testStartTime.isSame(lunchStart) ||
+            testStartTime.isBetween(lunchStart, lunchEnd) ||
+            testEndTime.isBetween(lunchStart, lunchEnd)
           ) {
             ok = false;
           }
