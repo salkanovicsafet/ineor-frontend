@@ -145,7 +145,6 @@ function Home(): JSX.Element {
         barber?.workHours[day - 1].lunchTime.durationMinutes;
       const lunchEnd = moment(
         barber?.workHours[day - 1].lunchTime.startHour + '.00',
-        'HH.mm',
         'HH.mm'
       ).add(lunchDuration, 'minutes');
       const endHour = moment(
@@ -206,29 +205,36 @@ function Home(): JSX.Element {
         let ok = true;
         const testStartTime = moment(time, 'HH.mm');
         const testEndTime = moment(time, 'HH.mm').add(duration, 'minutes');
+
+        if (
+          //////This makes sure that sessions dont go longer than the barber's shift
+          testStartTime.isSame(endHour) ||
+          testEndTime.isAfter(endHour) ||
+          //////This makes sure that the sessions arent during the barber's lunch break
+          testStartTime.isSame(lunchStart) ||
+          testStartTime.isBetween(lunchStart, lunchEnd) ||
+          testEndTime.isBetween(lunchStart, lunchEnd) ||
+          (testStartTime.isBefore(lunchStart) &&
+            testEndTime.isSameOrAfter(lunchEnd))
+        )
+          ok = false;
+
         formattedConflicts.forEach((conflict) => {
           const conflictStart = moment(conflict.start, 'HH.mm');
           const conflictEnd = moment(conflict.end, 'HH.mm');
-
           if (
             //////These make sure that appointments dont overlap other already-booked appointments
             testStartTime.isSame(conflictStart) ||
             testStartTime.isBetween(conflictStart, conflictEnd) ||
             testEndTime.isBetween(conflictStart, conflictEnd) ||
-            //////This makes sure that sessions dont go longer than the barber's shift
-            testEndTime.isAfter(endHour) ||
-            //////This makes sure that the sessions arent during the barber's lunch break
-            testStartTime.isSame(lunchStart) ||
-            testStartTime.isBetween(lunchStart, lunchEnd) ||
-            testEndTime.isBetween(lunchStart, lunchEnd)
+            (testStartTime.isBefore(conflictStart) &&
+              testEndTime.isSameOrAfter(conflictEnd))
           ) {
             ok = false;
           }
         });
         return ok;
       });
-
-      console.log(availableIntervals);
 
       const formattedIntervals = availableIntervals.map((time) => (
         <option value={time} key={time}>
@@ -285,10 +291,24 @@ function Home(): JSX.Element {
     return inputsAreValid;
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>): void {
+  async function handleSubmit(
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> {
     e.preventDefault();
-    areInputsValid();
-    alert(JSON.stringify(inputValues));
+    if (!areInputsValid()) return;
+    try {
+      const response = await axios.post('/appointments', {
+        startDate: moment(
+          inputValues.date + ' ' + inputValues.time,
+          'YYYY-MM-DD HH.mm'
+        ).unix(),
+        barberId: +inputValues.barber,
+        serviceId: +inputValues.service,
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const BarberOptions = barbers.map((barber) => {
