@@ -133,14 +133,16 @@ function Home(): JSX.Element {
       const barber = barbers.find((barber) => barber.id == selectedBarber);
       const startHour = barber?.workHours[day - 1].startHour + '.00';
       const endHour = barber?.workHours[day - 1].endHour + '.00';
-      const service = services.find((service) => service.id == selectedService);
+      const duration = services.find(
+        (service) => service.id == selectedService
+      )?.durationMinutes;
       const start = moment(startHour, 'HH.mm');
       const end = moment(endHour, 'HH.mm');
       // round starting minutes up to nearest 10
       // note that 59 will round up to 60, and moment.js handles that correctly
       start.minutes(Math.ceil(start.minutes() / 10) * 10);
 
-      const result = [];
+      const result: string[] = [];
 
       const current = moment(start);
 
@@ -171,17 +173,40 @@ function Home(): JSX.Element {
       );
 
       const formattedConflicts = conflictingAppointments.map((appointment) => {
+        const conflictDuration = services.find(
+          (service) => service.id === appointment.serviceId
+        )?.durationMinutes;
         return {
           start: moment(appointment.start).format('HH.mm'),
-          duration: services.find(
-            (service) => service.id === appointment.serviceId
-          )?.durationMinutes,
+          duration: conflictDuration,
+          end: moment(appointment.start)
+            .add(conflictDuration, 'minutes')
+            .format('HH.mm'),
         };
       });
 
-      console.log(formattedConflicts);
+      const availableIntervals = result.filter((time, index) => {
+        let ok = true;
+        const testStartTime = moment(time, 'HH.mm');
+        const testEndTime = moment(time, 'HH.mm').add(duration, 'minutes');
+        formattedConflicts.forEach((conflict) => {
+          const conflictStart = moment(conflict.start, 'HH.mm');
+          const conflictEnd = moment(conflict.end, 'HH.mm');
 
-      const formattedIntervals = result.map((time) => (
+          if (
+            testStartTime.isSame(conflictStart) ||
+            testStartTime.isBetween(conflictStart, conflictEnd) ||
+            testEndTime.isBetween(conflictStart, conflictEnd)
+          ) {
+            ok = false;
+          }
+        });
+        return ok;
+      });
+
+      console.log(availableIntervals);
+
+      const formattedIntervals = availableIntervals.map((time) => (
         <option value={time} key={time}>
           {time}
         </option>
