@@ -40,7 +40,9 @@ function Home(): JSX.Element {
     },
   ]);
 
-  const [timeOptions, setTimeOptions] = useState<JSX.Element[]>([]);
+  const [timeOptions, setTimeOptions] = useState<JSX.Element[] | JSX.Element>(
+    []
+  );
 
   // gets barbers from backend
   useEffect(() => {
@@ -238,11 +240,18 @@ function Home(): JSX.Element {
         return ok;
       });
 
-      const formattedIntervals = availableIntervals.map((time) => (
-        <option value={time} key={time}>
-          {time}
-        </option>
-      ));
+      let formattedIntervals;
+
+      if (availableIntervals.length !== 0) {
+        formattedIntervals = availableIntervals.map((time) => (
+          <option value={time} key={time}>
+            {time}
+          </option>
+        ));
+      } else {
+        formattedIntervals = <option value="">No time windows</option>;
+      }
+
       setTimeOptions(formattedIntervals);
     }
   }
