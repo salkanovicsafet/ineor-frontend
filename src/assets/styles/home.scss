@@ -4,6 +4,11 @@
   width: 74.5%;
   margin: 1.625rem auto;
   padding-bottom: 10rem;
+
+  @media (max-width: 704px){
+    width: 85.5%;
+    padding-bottom: 3rem;
+  }
 }
 
 header{
@@ -25,10 +30,15 @@ h3{
   letter-spacing: 1px;
   color: $black;
   font-weight: 500;
+  @media (max-width: 1199px){
+    line-height: 1.7rem;
+  }
 }
 
 h3:last-of-type{
-  margin-top: .8125rem;
+  @media (min-width: 1200px){
+    margin-top: .8125rem;
+  }
 }
 
 .container{
@@ -37,9 +47,13 @@ h3:last-of-type{
 
 .image-container{
   margin-top: 3.5rem;
-  width: 75.9%;
+  width: 100%;
   padding: .625rem;
   border: 3.5px solid $black;
+  box-sizing: border-box;
+  @media (min-width: 1200px){
+    width: 75.9%;
+  }
   img{
     max-width: 100%;
     display: block;
@@ -48,12 +62,18 @@ h3:last-of-type{
 
 .form-container{
   margin: 0;
-  max-width: 33%;
   background-color: $primary-color;
-  position: absolute;
   right: 0;
   top: 21.5%;
   padding: 31px 31px 44px 31px;
+  @media (min-width: 1200px){
+    position: absolute;
+    max-width: 33%;
+  }
+  @media (max-width: 1199px){
+    margin-top: 2rem;
+    padding: 1.5rem;
+  }
 }
 
 h2{
@@ -63,6 +83,7 @@ h2{
   letter-spacing: 1.8px;
   color: $white;
   font-weight: 500;
+  text-align: center;
 }
 
 .error-msg{
@@ -78,6 +99,11 @@ h2{
   div {
     width: 100%;
   }
+
+  @media (max-width: 1199px){
+    margin: 0.5rem
+  }
+  
 }
 
 form{
@@ -88,15 +114,25 @@ form{
   width: 100%;
   display: flex;
   gap: .625rem;
-  margin-top:1.5625rem;
+  @media (min-width: 1200px){
+    margin-top:1.5625rem;
+  }
+  @media (max-width: 1199px){
+    flex-direction: column;
+  }
 }
 
 .field-group:nth-of-type(2){
-  margin-top:2.1875rem;
+  margin-top: 0.5rem;
+  @media (min-width: 1200px){
+    margin-top:2.1875rem;
+  }
 }
 
 .field-group:nth-of-type(4){
-  margin-top:0.5rem;
+  @media (min-width: 1200px){
+    margin-top:0.5rem;
+  }
 }
 
 .field{
@@ -117,10 +153,14 @@ input, select{
 select{
   border-radius: 6px;
   cursor: pointer;
+  width: 100%;
 }
 
 input[type="date"]{
   cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 0;
 }
 
 input[type="text"]:disabled{
@@ -148,3 +188,9 @@ button{
 button:active{
     background-color:#fe854d;
   }
+
+.--mobile-hidden{
+  @media (max-width: 704px){
+    display: none;
+  }
+}

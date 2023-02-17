@@ -244,6 +244,12 @@
       "barberId": 3,
       "serviceId": 3,
       "id": 12
+    },
+    {
+      "startDate": 1677846600,
+      "barberId": 2,
+      "serviceId": 2,
+      "id": 13
     }
   ],
   "services": [

@@ -346,7 +346,9 @@ function Home(): JSX.Element {
         <h3>
           Great Hair Doesn&apos;t Happen By Chance. It Happens By Appointment!
         </h3>
-        <h3>So Don&apos;t Wait And Book Your Appointment Now!</h3>
+        <h3 className="--mobile-hidden">
+          So Don&apos;t Wait And Book Your Appointment Now!
+        </h3>
       </header>
       <div className="container">
         <div className="image-container">
@@ -485,7 +487,10 @@ function Home(): JSX.Element {
             <div className="field-group">
               <input type="text" name="price" value={priceField} disabled />
             </div>
-            <button type="submit">BOOK APPOINTMENT</button>
+            <button type="submit">
+              BOOK&nbsp;
+              <span className="--mobile-hidden">APPOINTMENT</span>
+            </button>
           </form>
         </div>
       </div>
