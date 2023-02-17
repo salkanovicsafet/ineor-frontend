@@ -1,6 +1,7 @@
 import axios from 'axios';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import stockBarberPhoto from '../assets/images/image.jpg';
 import '../assets/styles/home.scss';
 import Appointment from '../interfaces/Appointment';
@@ -9,6 +10,7 @@ import Barber from '../interfaces/Barber';
 import Service from '../interfaces/Service';
 
 function Home(): JSX.Element {
+  const navigate = useNavigate();
   const [barbers, setBarbers] = useState<Barber[]>([
     {
       id: 0,
@@ -293,7 +295,7 @@ function Home(): JSX.Element {
 
   async function handleSubmit(
     e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> {
+  ): Promise<Response | void> {
     e.preventDefault();
     if (!areInputsValid()) return;
     try {
@@ -309,6 +311,7 @@ function Home(): JSX.Element {
     } catch (error) {
       console.error(error);
     }
+    navigate('/success');
   }
 
   const BarberOptions = barbers.map((barber) => {
